@@ -1,0 +1,127 @@
+<html lang="en">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>
+   Half Price Store
+  </title>
+  <script src="https://cdn.tailwindcss.com">
+  </script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+ </head>
+ 
+ <body class="font-sans">
+  <script>
+    function getRecommendations(lastViewed) {
+        let userId = localStorage.getItem("user_id") || "guest";
+
+        fetch("http://127.0.0.1:5000/recommend", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ user_id: userId, last_viewed: lastViewed })
+        })
+        .then(response => response.json())
+        .then(data => {
+            let recContainer = document.getElementById("recommendations");
+            recContainer.innerHTML = data.recommendations.map(product => `
+                <div class="product">
+                    <h3>${product.name}</h3>
+                    <p>₹${product.price}</p>
+                    <button onclick="addToCart('${product.name}', ${product.price})">Add to Cart</button>
+                </div>
+            `).join("");
+        });
+    }
+
+    // Call recommendations when a product is added to cart
+    function addToCart(productName, price) {
+        localStorage.setItem("last_viewed", productName);
+        getRecommendations(productName);
+    }
+</script>
+
+<div id="recommendations"></div>
+
+    <script src="cart.js"></script>
+
+
+  <!-- Header -->
+  <header class="bg-white shadow-md">
+   <div class="container mx-auto flex justify-between items-center py-2 px-4">
+    <div class="flex items-center">
+     <h1 class="text-orange-600 text-xl font-bold">BANERJEE STORE</h1> 
+     <span class="ml-2 text-sm">
+      <a href=" location.html">Choose Location</a>
+      <i class="fas fa-map-marker-alt">
+      </i>
+     </span>
+    </div>
+    <div class="flex items-center space-x-4">
+    </div>
+   </div>
+   <div class="bg-gray-800 py-2">
+    <div class="container mx-auto flex items-center px-4">
+     <input class="w-full py-2 px-4 rounded-l-md" placeholder="Search for Products, Brands and More" type="text"/>
+     <button class="bg-white text-gray-800 px-4 rounded-r-md">
+      <i class="fas fa-search">
+      </i>
+     </button>
+    </div>
+   </div>
+   <nav class="bg-white shadow-md">
+    <div class="container mx-auto flex justify-between items-center py-2 px-4">
+     <div class="flex space-x-4">
+      <a class="text-sm font-semibold" href="#">
+       All Categories
+      </a>
+      <a class="text-sm" href="{{ url_for('foodgrains')}}">
+       Foodgrain, Oil &amp; Masala
+      </a>
+      <a class="text-sm" href="vegies.html">
+       Fruits &amp; Vegetables
+      </a>
+      <a class="text-sm" href="milk.html">
+       Dairy &amp; Bakery
+      </a>
+      <a class="text-sm" href="homecare.html">
+       Home Care
+      </a>
+     </div>
+     <div class="flex space-x-4">
+        <button class="bg-orange-500 text-white px-4 py-2 rounded">
+            <a id="login-link" href="{{ url_for('login') }}">Login/Register</a>
+        </button>
+    
+     </div>
+    </div>
+   </nav>
+  </header>
+  <!-- Main Banner -->
+  <section class="bg-yellow-100 py-8">
+   <div class="container mx-auto flex flex-col items-center px-4">
+    <h1 class="text-4xl font-bold text-black mb-4">
+     WHAT'S IN-STORE?
+    </h1>
+    <div class="flex items-center space-x-4">
+     <div class="bg-yellow-500 text-white text-6xl font-bold p-4 rounded">
+      HALF PRICE STORE
+     </div>
+     <div class="bg-white text-red-500 text-4xl font-bold p-4 rounded">
+      FLAT 50% OFF
+     </div>
+    </div>
+    <button class="bg-blue-500 text-white text-xl font-bold px-6 py-2 mt-4 rounded">
+     <a href="{{ url_for('foodgrains')}}">SHOP NOW</a>
+    </button>
+    <p class="text-red-500 text-xl font-bold mt-2">
+     #BachateRaho Everyday Sabse Sasta
+    </p>
+    <div class="mt-8">
+     <img alt="Value Pack Products" class="w-full" height="300" src="https://storage.googleapis.com/a1aa/image/j_epgW6kxnrCki18P3XbCLdpSt4OPKPg5GeZpO-GESE.jpg" width="800"/>
+    </div>
+   </div>
+  </section>
+ </body>
+</html>
